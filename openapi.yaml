@@ -1,0 +1,393 @@
+openapi: "3.0.3"
+
+info:
+  title: News Digest API
+  version: "1.0.0"
+  description: |
+    Multi-Source AI-Powered News Digest Platform API.
+    Aggregates news from NewsAPI.org and RSS feeds, generates AI summaries
+    and sentiment analysis via Claude, and clusters articles by topic.
+  contact:
+    name: News Digest Support
+  license:
+    name: MIT
+
+servers:
+  - url: http://localhost:5000
+    description: Local development server
+
+security:
+  - ApiKeyAuth: []
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: API key for authenticating requests. Default dev key is `digest-secret-key-2024`.
+
+  schemas:
+    Article:
+      type: object
+      properties:
+        title:
+          type: string
+          example: "OpenAI Announces GPT-5"
+        description:
+          type: string
+          example: "OpenAI has unveiled its next-generation model..."
+        url:
+          type: string
+          format: uri
+          example: "https://example.com/article/gpt-5"
+        urlToImage:
+          type: string
+          format: uri
+          nullable: true
+          example: "https://example.com/images/gpt5.jpg"
+        publishedAt:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:30:00Z"
+        sourceName:
+          type: string
+          example: "TechCrunch"
+        category:
+          type: string
+          example: "technology"
+        summary:
+          type: string
+          example: "OpenAI revealed GPT-5 with significant improvements. The model shows breakthroughs in reasoning."
+        sentiment:
+          type: string
+          enum: [positive, neutral, negative]
+          example: "positive"
+        topics:
+          type: array
+          items:
+            type: string
+          example: ["technology", "ai", "openai"]
+
+    SentimentBreakdown:
+      type: object
+      properties:
+        positive:
+          type: integer
+          example: 3
+        neutral:
+          type: integer
+          example: 5
+        negative:
+          type: integer
+          example: 1
+
+    Cluster:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+        clusterTopic:
+          type: string
+          example: "technology"
+        articles:
+          type: array
+          items:
+            $ref: "#/components/schemas/Article"
+        articleCount:
+          type: integer
+          example: 5
+        sources:
+          type: array
+          items:
+            type: string
+          example: ["TechCrunch", "BBC News"]
+        latestAt:
+          type: string
+          format: date-time
+          example: "2024-01-15T12:00:00Z"
+        sentimentBreakdown:
+          $ref: "#/components/schemas/SentimentBreakdown"
+
+    DigestResponse:
+      type: object
+      properties:
+        lastUpdated:
+          type: string
+          format: date-time
+          nullable: true
+        totalArticles:
+          type: integer
+          example: 47
+        totalClusters:
+          type: integer
+          example: 8
+        clusters:
+          type: array
+          items:
+            $ref: "#/components/schemas/Cluster"
+
+    TopicsResponse:
+      type: object
+      properties:
+        topics:
+          type: array
+          items:
+            type: string
+          example: ["technology", "business", "health", "ai", "sports"]
+
+    TopicResponse:
+      type: object
+      properties:
+        topic:
+          type: string
+          example: "technology"
+        clusters:
+          type: array
+          items:
+            $ref: "#/components/schemas/Cluster"
+        count:
+          type: integer
+          example: 3
+
+    SubscribeRequest:
+      type: object
+      required:
+        - email
+        - topics
+      properties:
+        email:
+          type: string
+          format: email
+          example: "user@example.com"
+        topics:
+          type: array
+          items:
+            type: string
+          example: ["technology", "health"]
+
+    SubscribeResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Subscribed to technology, health"
+
+    SubscriptionResponse:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        topics:
+          type: array
+          items:
+            type: string
+
+    HealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: "ok"
+        uptime:
+          type: number
+          example: 12345.67
+        timestamp:
+          type: string
+          format: date-time
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Invalid or missing API key"
+
+paths:
+  /api/health:
+    get:
+      summary: Health check
+      description: Returns server health status. No authentication required.
+      security: []
+      tags: [System]
+      responses:
+        "200":
+          description: Server is healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthResponse"
+
+  /api/docs:
+    get:
+      summary: OpenAPI specification
+      description: Returns the OpenAPI 3.0 specification for this API. No authentication required.
+      security: []
+      tags: [System]
+      responses:
+        "200":
+          description: OpenAPI spec
+          content:
+            text/yaml:
+              schema:
+                type: string
+
+  /api/digest:
+    get:
+      summary: Get clustered news digest
+      description: |
+        Returns all clustered news articles with AI-generated summaries and sentiment analysis.
+        Supports optional filtering by sentiment and limiting the number of clusters.
+      tags: [Digest]
+      parameters:
+        - name: sentiment
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [positive, neutral, negative]
+          description: Filter clusters by dominant sentiment
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+          description: Maximum number of clusters to return
+      responses:
+        "200":
+          description: Clustered news digest
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DigestResponse"
+        "401":
+          description: Invalid or missing API key
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "429":
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/topics:
+    get:
+      summary: List all available topics
+      description: Returns all unique topic tags extracted from articles.
+      tags: [Topics]
+      responses:
+        "200":
+          description: List of topics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TopicsResponse"
+        "401":
+          description: Invalid or missing API key
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/topic/{name}:
+    get:
+      summary: Get clusters by topic
+      description: |
+        Filter clusters where clusterTopic matches the given name (case-insensitive)
+        or any article's topics array includes the name.
+      tags: [Topics]
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Topic name to filter by
+          example: technology
+      responses:
+        "200":
+          description: Clusters matching the topic
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TopicResponse"
+        "401":
+          description: Invalid or missing API key
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/subscribe:
+    post:
+      summary: Subscribe to topics
+      description: Subscribe an email address to receive updates for selected topics.
+      tags: [Subscriptions]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SubscribeRequest"
+      responses:
+        "200":
+          description: Successfully subscribed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SubscribeResponse"
+        "400":
+          description: Invalid email or topics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Invalid or missing API key
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/subscriptions/{email}:
+    get:
+      summary: Get subscriptions for an email
+      description: Returns the topic subscriptions associated with the given email.
+      tags: [Subscriptions]
+      parameters:
+        - name: email
+          in: path
+          required: true
+          schema:
+            type: string
+            format: email
+          description: Subscriber email address
+      responses:
+        "200":
+          description: Subscription details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SubscriptionResponse"
+        "404":
+          description: No subscription found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Invalid or missing API key
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
