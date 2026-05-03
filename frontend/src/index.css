@@ -1,0 +1,408 @@
+@import "tailwindcss";
+
+/* ═══════════════════════════════════════════════════════════
+   DIGEST — Global Styles & Design Tokens
+   Warm Paper / Sketch Aesthetic (inspired by ResearchPilot)
+   ═══════════════════════════════════════════════════════════ */
+
+:root {
+  --bg:          #f7f0e4;
+  --bg-strong:   #f0e3d0;
+  --panel:       rgba(255, 252, 247, 0.92);
+  --panel-strong:#fffaf1;
+  --ink:         #10213a;
+  --muted:       #546275;
+  --line:        #122543;
+  --accent:      #f26f52;
+  --accent-soft: #ffd8c8;
+  --yellow:      #fde047;
+  --yellow-soft: #fff8c9;
+  --blue-soft:   #d4e8ff;
+  --green-soft:  #d9ecd2;
+  --rose-soft:   #f5d1da;
+  --shadow:      0 18px 48px rgba(16, 33, 58, 0.12);
+  --shadow-sm:   8px 8px 0 rgba(16, 33, 58, 0.08);
+}
+
+/* ─── Base ──────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  color: var(--ink);
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(242, 111, 82, 0.10), transparent 34%),
+    radial-gradient(circle at top right, rgba(91, 146, 229, 0.12), transparent 28%),
+    linear-gradient(180deg, #f8f1e7 0%, #f1e3d2 100%);
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(16, 33, 58, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(16, 33, 58, 0.04) 1px, transparent 1px);
+  background-size: 36px 36px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.5), transparent 80%);
+  z-index: 0;
+}
+
+#root {
+  position: relative;
+  z-index: 1;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button, input, textarea, select {
+  font: inherit;
+}
+
+button { border: 0; background: none; cursor: pointer; }
+
+/* ─── Scrollbar ─────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-strong); }
+::-webkit-scrollbar-thumb { background: rgba(16,33,58,0.2); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(16,33,58,0.35); }
+
+/* ─── Selection ─────────────────────────────────────────── */
+::selection { background: rgba(242, 111, 82, 0.25); color: var(--ink); }
+
+/* ─── Focus ─────────────────────────────────────────────── */
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ════════════════════════════════════════════════════════════
+   SKETCH UTILITY CLASSES
+   ════════════════════════════════════════════════════════════ */
+
+/* Panel / Card */
+.sketch-panel {
+  background: rgba(255, 252, 247, 0.92);
+  border: 2px solid var(--line);
+  border-radius: 24px;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+.sketch-panel::after {
+  content: "";
+  position: absolute;
+  top: 12px;
+  right: 18px;
+  width: 56px;
+  height: 14px;
+  background: rgba(255, 255, 255, 0.75);
+  border: 2px dashed rgba(16, 33, 58, 0.22);
+  transform: rotate(7deg);
+}
+
+.sketch-panel.yellow {
+  background: linear-gradient(180deg, rgba(255, 248, 201, 0.9), rgba(255, 253, 246, 0.95));
+}
+
+.sketch-panel.blue {
+  background: linear-gradient(180deg, rgba(212, 232, 255, 0.9), rgba(255, 253, 246, 0.95));
+}
+
+.sketch-panel.rose {
+  background: linear-gradient(180deg, rgba(255, 225, 231, 0.9), rgba(255, 253, 246, 0.95));
+}
+
+/* Button */
+.sketch-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 14px;
+  border: 2px solid var(--line);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.01em;
+  box-shadow: 4px 4px 0 rgba(16, 33, 58, 0.12);
+  transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease;
+  cursor: pointer;
+  color: var(--ink);
+  background: white;
+}
+
+.sketch-btn:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 rgba(16, 33, 58, 0.12);
+}
+
+.sketch-btn.primary {
+  background: var(--yellow);
+}
+
+.sketch-btn.accent {
+  background: var(--accent);
+  color: white;
+  border-color: #cf553b;
+}
+
+.sketch-btn.soft {
+  background: var(--blue-soft);
+}
+
+.sketch-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 4px 4px 0 rgba(16, 33, 58, 0.12);
+}
+
+/* Badge / Pill */
+.sketch-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(16, 33, 58, 0.15);
+  background: rgba(255, 255, 255, 0.82);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.sketch-badge.yellow { background: rgba(253, 224, 71, 0.6); }
+.sketch-badge.blue   { background: rgba(212, 232, 255, 0.7); }
+.sketch-badge.green  { background: rgba(217, 236, 210, 0.7); }
+.sketch-badge.rose   { background: rgba(245, 209, 218, 0.7); }
+.sketch-badge.orange { background: rgba(255, 216, 200, 0.7); }
+
+/* Chip / Tab */
+.sketch-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1.5px solid rgba(16, 33, 58, 0.14);
+  background: rgba(255, 255, 255, 0.76);
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+  color: var(--ink);
+}
+
+.sketch-chip:hover {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(16, 33, 58, 0.3);
+}
+
+.sketch-chip.active {
+  background: var(--ink);
+  color: white;
+  border-color: var(--ink);
+}
+
+/* Input */
+.sketch-input {
+  width: 100%;
+  border-radius: 16px;
+  border: 2px solid rgba(16, 33, 58, 0.16);
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--ink);
+  padding: 12px 16px;
+  outline: none;
+  font-size: 14px;
+  transition: border-color 140ms ease;
+}
+
+.sketch-input:focus {
+  border-color: var(--accent);
+}
+
+.sketch-input::placeholder {
+  color: var(--muted);
+}
+
+/* Metric tile */
+.metric-tile {
+  padding: 16px 18px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1.5px solid rgba(16, 33, 58, 0.12);
+  box-shadow: 4px 4px 0 rgba(16, 33, 58, 0.05);
+}
+
+.metric-value {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.metric-label {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Status dot */
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: #22c55e;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.25);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.25); }
+  50%       { box-shadow: 0 0 0 6px rgba(34, 197, 94, 0.08); }
+}
+
+/* Skeleton shimmer */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(16,33,58,0.06) 25%,
+    rgba(16,33,58,0.12) 50%,
+    rgba(16,33,58,0.06) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: 12px;
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Toast */
+.toast-container {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.toast {
+  background: var(--ink);
+  border-radius: 14px;
+  color: white;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  box-shadow: 6px 6px 0 rgba(16, 33, 58, 0.2);
+  animation: toastIn 0.35s ease-out forwards;
+  max-width: 360px;
+  cursor: pointer;
+}
+
+@keyframes toastIn {
+  0%   { transform: translateY(100%) scale(0.9); opacity: 0; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+/* Modal overlay */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(16, 33, 58, 0.45);
+  backdrop-filter: blur(6px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  0%   { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+/* Sentiment colors */
+.sentiment-positive { color: #15803d; background: var(--green-soft); }
+.sentiment-negative { color: #b91c1c; background: var(--rose-soft); }
+.sentiment-neutral  { color: var(--muted); background: rgba(16,33,58,0.07); }
+
+/* Stagger helpers */
+.stagger-1 { animation-delay: 0.05s; }
+.stagger-2 { animation-delay: 0.10s; }
+.stagger-3 { animation-delay: 0.15s; }
+.stagger-4 { animation-delay: 0.20s; }
+.stagger-5 { animation-delay: 0.25s; }
+.stagger-6 { animation-delay: 0.30s; }
+
+/* Divider */
+.sketch-divider {
+  height: 1px;
+  background: rgba(16, 33, 58, 0.1);
+  margin: 10px 0;
+}
+
+/* Loading overlay */
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(247, 240, 228, 0.8);
+  backdrop-filter: blur(8px);
+  gap: 24px;
+}
+
+.loading-bar-track {
+  position: relative;
+  width: 220px;
+  height: 30px;
+  border: 2.5px solid var(--ink);
+  border-radius: 6px;
+  background: white;
+  overflow: hidden;
+}
+
+.loading-bar-fill {
+  position: absolute;
+  inset: 4px;
+  background: var(--yellow);
+  border-radius: 3px;
+  transform-origin: left center;
+  animation: barFill 2s ease-in-out infinite;
+}
+
+@keyframes barFill {
+  0%   { transform: scaleX(0); }
+  65%  { transform: scaleX(1); }
+  100% { transform: scaleX(1); }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
