@@ -1,0 +1,147 @@
+{
+	"info": {
+		"name": "News Digest API",
+		"description": "Postman collection for the Alfaleus News Digest Platform",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get Full Digest",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-API-Key",
+						"value": "pushkar_news_digest_2026_secure_key",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://alfaleus-assignment.onrender.com/api/digest",
+					"protocol": "https",
+					"host": [
+						"alfaleus-assignment",
+						"onrender",
+						"com"
+					],
+					"path": [
+						"api",
+						"digest"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List All Topics",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-API-Key",
+						"value": "pushkar_news_digest_2026_secure_key",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://alfaleus-assignment.onrender.com/api/topics",
+					"protocol": "https",
+					"host": [
+						"alfaleus-assignment",
+						"onrender",
+						"com"
+					],
+					"path": [
+						"api",
+						"topics"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Topic: Technology",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-API-Key",
+						"value": "pushkar_news_digest_2026_secure_key",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://alfaleus-assignment.onrender.com/api/topic/technology",
+					"protocol": "https",
+					"host": [
+						"alfaleus-assignment",
+						"onrender",
+						"com"
+					],
+					"path": [
+						"api",
+						"topic",
+						"technology"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://alfaleus-assignment.onrender.com/api/health",
+					"protocol": "https",
+					"host": [
+						"alfaleus-assignment",
+						"onrender",
+						"com"
+					],
+					"path": [
+						"api",
+						"health"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "value",
+				"value": "pushkar_news_digest_2026_secure_key",
+				"type": "string"
+			},
+			{
+				"key": "key",
+				"value": "X-API-Key",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
